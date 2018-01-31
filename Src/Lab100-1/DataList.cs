@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,6 +66,47 @@ namespace Lab100_1 {
         public void DisplayPeople() {
             int i = 0;
             personList.ForEach(x => Console.WriteLine($"{++i,6}) {x}"));
+        }
+        public int LoadData() {
+            string line;
+            string[] words;
+            int NumOfRecords = 0;
+
+            StreamReader reader = new StreamReader(FileName);
+            try {
+                do {
+                    NumOfRecords++;
+                    line = reader.ReadLine();
+                    words = line.Split(new String[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                    personList.Add(new Person(words[0], words[1], words[2], words[3], words[4], Convert.ToInt32(words[5])));
+                } while (reader.Peek() != -1);
+            }catch(Exception e) {
+                Console.WriteLine("Error: "+ e.Message);
+            } finally {
+                reader.Close();
+            }
+            Console.WriteLine($"Loading records, number of records read: {NumOfRecords}");
+            return NumOfRecords;
+        }
+        public string CompareTwoPersons(Person p1, Person p2) {
+            int compare = p1.CompareTo(p2);
+            string retValue = "";
+            switch (compare) {
+                case -1:
+                    retValue = $"{p1.FirstName} {p1.LastName} is less than to {p2.FirstName} {p2.LastName}";
+                    break;
+                case 0:
+                    retValue = $"{p1.FirstName} {p1.LastName} is equal to {p2.FirstName} {p2.LastName}";
+                    break;
+                case 1:
+                    retValue = $"{p1.FirstName} {p1.LastName} is greater than to {p2.FirstName} {p2.LastName}";
+                    break;
+                    defualt:
+                    Console.WriteLine("This cannot happen, fix your code...");
+                    retValue = $"{p1.FirstName} {p1.LastName} ...default... {p2.FirstName} {p2.LastName}";
+                    break;
+            }
+            return retValue;
         }
 
     }
